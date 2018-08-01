@@ -57,6 +57,8 @@ export class TaskListDemoComponent implements OnInit {
 
     includeProcessInstance: boolean;
 
+    isDetailedView: boolean;
+
     assignmentOptions = [
         {value: 'assignee', title: 'Assignee'},
         {value: 'candidate', title: 'Candidate'}
@@ -112,8 +114,11 @@ export class TaskListDemoComponent implements OnInit {
             taskSize: new FormControl(''),
             taskPage: new FormControl(''),
             taskStart: new FormControl('', [Validators.pattern('^[0-9]*$')]),
-            taskIncludeProcessInstance: new FormControl('')
+            taskIncludeProcessInstance: new FormControl(''),
+            detailedView: new FormControl(true)
         });
+
+        this.filterTasks(this.taskListForm.value);
 
         this.taskListForm.valueChanges
             .pipe(
@@ -140,6 +145,7 @@ export class TaskListDemoComponent implements OnInit {
         this.page = taskFilter.taskPage;
 
         this.includeProcessInstance = taskFilter.taskIncludeProcessInstance === 'include';
+        this.isDetailedView = taskFilter.detailedView;
     }
 
     resetTaskForm() {
@@ -163,6 +169,10 @@ export class TaskListDemoComponent implements OnInit {
 
     isFormValid() {
         return this.taskListForm && this.taskListForm.dirty && this.taskListForm.valid;
+    }
+
+    getPresetColumn() {
+        return this.isDetailedView ? 'detailed' : 'minimal';
     }
 
     get taskAppId(): AbstractControl {
@@ -211,5 +221,9 @@ export class TaskListDemoComponent implements OnInit {
 
     get taskPage(): AbstractControl {
         return this.taskListForm.get('taskPage');
+    }
+
+    get detailedView(): AbstractControl {
+        return this.taskListForm.get('detailedView');
     }
 }
